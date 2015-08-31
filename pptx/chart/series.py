@@ -121,6 +121,24 @@ class LineSeries(_BaseSeries):
     """
     A data point series belonging to a line plot.
     """
+    def get_or_add_ln(self):
+        """
+        Return the ``<a:ln>`` element containing the line format properties
+        XML for this shape. Part of the callback interface required by
+        |LineFormat|.
+        """
+        spPr = self._element.get_or_add_spPr()
+        ln = spPr.get_or_add_ln()
+        return ln
+
+    @lazyproperty
+    def line(self):
+        """
+        |LineFormat| instance for this shape, providing access to line
+        properties such as line color and width.
+        """
+        return LineFormat(self)
+
     @property
     def smooth(self):
         """

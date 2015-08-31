@@ -19,6 +19,7 @@ def ChartXmlWriter(chart_type, series_seq):
             XL_CHART_TYPE.BAR_CLUSTERED:    _BarChartXmlWriter,
             XL_CHART_TYPE.BAR_STACKED_100:  _BarChartXmlWriter,
             XL_CHART_TYPE.COLUMN_CLUSTERED: _BarChartXmlWriter,
+            XL_CHART_TYPE.COLUMN_STACKED:   _BarChartXmlWriter,
             XL_CHART_TYPE.LINE:             _LineChartXmlWriter,
             XL_CHART_TYPE.PIE:              _PieChartXmlWriter,
         }[chart_type]
@@ -116,7 +117,7 @@ class _BarChartXmlWriter(_BaseChartXmlWriter):
     def _barDir_xml(self):
         XL = XL_CHART_TYPE
         bar_types = (XL.BAR_CLUSTERED, XL.BAR_STACKED_100)
-        col_types = (XL.COLUMN_CLUSTERED,)
+        col_types = (XL.COLUMN_CLUSTERED, XL.COLUMN_STACKED)
         if self._chart_type in bar_types:
             return '        <c:barDir val="bar"/>\n'
         elif self._chart_type in col_types:
@@ -131,6 +132,7 @@ class _BarChartXmlWriter(_BaseChartXmlWriter):
             XL_CHART_TYPE.BAR_CLUSTERED:    'l',
             XL_CHART_TYPE.BAR_STACKED_100:  'l',
             XL_CHART_TYPE.COLUMN_CLUSTERED: 'b',
+            XL_CHART_TYPE.COLUMN_STACKED:   'b',
         }[self._chart_type]
 
     @property
@@ -138,10 +140,13 @@ class _BarChartXmlWriter(_BaseChartXmlWriter):
         XL = XL_CHART_TYPE
         clustered_types = (XL.BAR_CLUSTERED, XL.COLUMN_CLUSTERED)
         percentStacked_types = (XL.BAR_STACKED_100,)
+        stacked_types = (XL.COLUMN_STACKED,)
         if self._chart_type in clustered_types:
             return '        <c:grouping val="clustered"/>\n'
         elif self._chart_type in percentStacked_types:
             return '        <c:grouping val="percentStacked"/>\n'
+        elif self._chart_type in stacked_types:
+            return '        <c:grouping val="stacked"/>\n'
         raise NotImplementedError(
             'no _grouping_xml() for chart type %s' % self._chart_type
         )
@@ -149,7 +154,7 @@ class _BarChartXmlWriter(_BaseChartXmlWriter):
     @property
     def _overlap_xml(self):
         XL = XL_CHART_TYPE
-        percentStacked_types = (XL.BAR_STACKED_100,)
+        percentStacked_types = (XL.BAR_STACKED_100, XL.COLUMN_STACKED)
         if self._chart_type in percentStacked_types:
             return '        <c:overlap val="100"/>\n'
         return ''
@@ -176,6 +181,7 @@ class _BarChartXmlWriter(_BaseChartXmlWriter):
             XL_CHART_TYPE.BAR_CLUSTERED:    'b',
             XL_CHART_TYPE.BAR_STACKED_100:  'b',
             XL_CHART_TYPE.COLUMN_CLUSTERED: 'l',
+            XL_CHART_TYPE.COLUMN_STACKED:   'l',
         }[self._chart_type]
 
 
